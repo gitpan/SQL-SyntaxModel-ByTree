@@ -1,3 +1,47 @@
+2004-09-01   Darren Duncan <perl@DarrenDuncan.net>
+
+	* Release 0.30.
+
+	* From now on, SQL::SyntaxModel::ByTree and its primary distribution will
+	have identical version/release numbers, to help avoid public confusion as
+	to which distribution releases contain which SQL::SyntaxModel::ByTree
+	versions.  This distribution's Makefile.pl now uses "VERSION_FROM =>
+	'lib/SQL/SyntaxModel/ByTree.pm'" rather than "VERSION => N".  As such,
+	ByTree.pm will always have its own version number incremented for any
+	distribution changes, even if the changes are otherwise entirely in other
+	files.  With this first such release, ByTree.pm is now at v0.30, up from
+	v0.14 in the previous release.
+
+	* Other new code file versions are: en.pm v0.05.
+
+	* Updated external dependencies on Locale::KeyedText to v0.06 and on
+	SQL::SyntaxModel to v0.40.
+
+	* Updated all user-text strings in en.pm so that the module-class name
+	appears at the start of each, to the left of the method names.  This should
+	make it easier for users to know which code file among many candidates is
+	generating any error messages they see.
+
+	* Various small changes to ensure that ByTree.pm remains compatible with
+	the latest SQL::SyntaxModel changes.  Also affirmed that ByTree.pm still
+	passes the SQL::SyntaxModel test suite as a drop-in substitution for that
+	module.  Also updated all SEE ALSO docs.
+	
+	* Renamed any calls on [with_all_nodes_]test_mandatory_attributes() to
+	test_deferrable_constraints().
+
+	* Moved this distribution's t_*.pm file from the /lib directory to a new
+	/t/lib directory, so that it doesn't pollute the user's install
+	directories, and so the distribution is better organized on the whole.
+	Added a "use lib 't/lib';" to SQL_SyntaxModel_ByTree.t in order to make the
+	move work.  No changes to the tests themselves, except for any mentioned
+	below here.  Updated the MANIFEST.
+
+	* Updated t_SQL_SyntaxModel_ByTree.pm to transpose the 'domain' Node
+	attributes 'num_precision' and 'num_scale'.  This actually corresponds to a
+	SQL::SyntaxModel change made on 2004-04-10 with v0.16, but only just with
+	v0.40 do SQL::SyntaxModel's constraints flag the ByTree.pm test data error.
+
 2004-06-29   Darren Duncan <perl@DarrenDuncan.net>
 
 	* Release 0.29.

@@ -11,7 +11,7 @@ use 5.006;
 use strict;
 use warnings;
 use vars qw($VERSION);
-$VERSION = '0.04';
+$VERSION = '0.05';
 
 ######################################################################
 
@@ -45,16 +45,19 @@ PARTICULAR PURPOSE.
 
 ######################################################################
 
+my $CC = 'SQL::SyntaxModel::ByTree::Container';
+my $CN = 'SQL::SyntaxModel::ByTree::Node';
+
 my %text_strings = (
 	'SSMBTR_C_CR_NODE_TREE_NO_ARGS' => 
-		"create_node_tree(): missing argument",
+		"$CC.create_node_tree(): missing argument",
 	'SSMBTR_C_CR_NODE_TREE_BAD_ARGS' => 
-		"create_node_tree(): invalid argument; it is not a hash ref, but rather is '{ARG}'",
+		"$CC.create_node_tree(): invalid argument; it is not a hash ref, but rather is '{ARG}'",
 
 	'SSMBTR_N_CR_NODE_TREE_NO_ARGS' => 
-		"create_child_node_tree(): missing argument",
+		"$CN.create_child_node_tree(): missing argument",
 	'SSMBTR_N_CR_NODE_TREE_BAD_ARGS' => 
-		"create_child_node_tree(): invalid argument; it is not a hash ref, but rather is '{ARG}'",
+		"$CN.create_child_node_tree(): invalid argument; it is not a hash ref, but rather is '{ARG}'",
 );
 
 ######################################################################
@@ -122,6 +125,6 @@ user text template string, if there is one, or undef if not.
 
 =head1 SEE ALSO
 
-perl(1), Locale::KeyedText, SQL::SyntaxModel::ByTree, SQL::SyntaxModel::L::*.
+perl(1), Locale::KeyedText, SQL::SyntaxModel::ByTree.
 
 =cut

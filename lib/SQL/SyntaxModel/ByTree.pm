@@ -11,10 +11,10 @@ use 5.006;
 use strict;
 use warnings;
 use vars qw($VERSION);
-$VERSION = '0.14';
+$VERSION = '0.30';
 
-use Locale::KeyedText 0.04;
-use SQL::SyntaxModel 0.22;
+use Locale::KeyedText 0.06;
+use SQL::SyntaxModel 0.40;
 
 use base qw( SQL::SyntaxModel );
 
@@ -28,8 +28,8 @@ Standard Modules: I<none>
 
 Nonstandard Modules: 
 
-	Locale::KeyedText 0.04 (for error messages)
-	SQL::SyntaxModel 0.22 (parent class)
+	Locale::KeyedText 0.06 (for error messages)
+	SQL::SyntaxModel 0.40 (parent class)
 
 =head1 COPYRIGHT AND LICENSE
 
@@ -90,7 +90,7 @@ sub create_node_tree {
 	$node->set_attributes( $args->{$ARG_ATTRS} ); # handles node id and all attribute types
 	$node->put_in_container( $container );
 	$node->add_reciprocal_links();
-	$node->test_mandatory_attributes();
+	$node->test_deferrable_constraints();
 	$node->create_child_node_trees( $args->{$ARG_CHILDREN} );
 
 	return( $node );
@@ -132,7 +132,7 @@ sub create_child_node_tree {
 
 	$node->add_child_node( $new_child ); # sets more attributes in new_child
 
-	$new_child->test_mandatory_attributes();
+	$new_child->test_deferrable_constraints();
 	$new_child->create_child_node_trees( $args->{$ARG_CHILDREN} );
 
 	return( $new_child );
@@ -263,7 +263,7 @@ See the TODO file for an important message concerning the future of this module.
 
 =head1 SEE ALSO
 
-SQL::SyntaxModel::ByTree::L::*, SQL::SyntaxModel, and other items in its SEE
+SQL::SyntaxModel::ByTree::L::en, SQL::SyntaxModel, and other items in its SEE
 ALSO documentation.
 
 =cut

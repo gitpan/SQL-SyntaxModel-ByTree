@@ -31,18 +31,18 @@ sub create_and_populate_model {
 		{ 'id' =>  5, 'name' => 'str30' , 'base_type' => 'STR_CHAR', 'max_chars' =>    30, 
 			'char_enc' => 'ASCII', 'trim_white' => 1, },
 		{ 'id' =>  6, 'name' => 'str2k' , 'base_type' => 'STR_CHAR', 'max_chars' => 2_000, 'char_enc' => 'UTF8', },
-		{ 'id' =>  7, 'name' => 'byte' , 'base_type' => 'NUM_INT', 'num_scale' =>  3, },
-		{ 'id' =>  8, 'name' => 'short', 'base_type' => 'NUM_INT', 'num_scale' =>  5, },
-		{ 'id' =>  9, 'name' => 'int'  , 'base_type' => 'NUM_INT', 'num_scale' => 10, },
-		{ 'id' => 10, 'name' => 'long' , 'base_type' => 'NUM_INT', 'num_scale' => 19, },
-		{ 'id' => 11, 'name' => 'ubyte' , 'base_type' => 'NUM_INT', 'num_scale' =>  3, 'num_unsigned' => 1, },
-		{ 'id' => 12, 'name' => 'ushort', 'base_type' => 'NUM_INT', 'num_scale' =>  5, 'num_unsigned' => 1, },
-		{ 'id' => 13, 'name' => 'uint'  , 'base_type' => 'NUM_INT', 'num_scale' => 10, 'num_unsigned' => 1, },
-		{ 'id' => 14, 'name' => 'ulong' , 'base_type' => 'NUM_INT', 'num_scale' => 19, 'num_unsigned' => 1, },
+		{ 'id' =>  7, 'name' => 'byte' , 'base_type' => 'NUM_INT', 'num_precision' =>  3, },
+		{ 'id' =>  8, 'name' => 'short', 'base_type' => 'NUM_INT', 'num_precision' =>  5, },
+		{ 'id' =>  9, 'name' => 'int'  , 'base_type' => 'NUM_INT', 'num_precision' => 10, },
+		{ 'id' => 10, 'name' => 'long' , 'base_type' => 'NUM_INT', 'num_precision' => 19, },
+		{ 'id' => 11, 'name' => 'ubyte' , 'base_type' => 'NUM_INT', 'num_precision' =>  3, 'num_unsigned' => 1, },
+		{ 'id' => 12, 'name' => 'ushort', 'base_type' => 'NUM_INT', 'num_precision' =>  5, 'num_unsigned' => 1, },
+		{ 'id' => 13, 'name' => 'uint'  , 'base_type' => 'NUM_INT', 'num_precision' => 10, 'num_unsigned' => 1, },
+		{ 'id' => 14, 'name' => 'ulong' , 'base_type' => 'NUM_INT', 'num_precision' => 19, 'num_unsigned' => 1, },
 		{ 'id' => 15, 'name' => 'float' , 'base_type' => 'NUM_APR', 'num_octets' => 4, },
 		{ 'id' => 16, 'name' => 'double', 'base_type' => 'NUM_APR', 'num_octets' => 8, },
-		{ 'id' => 17, 'name' => 'dec10p2', 'base_type' => 'NUM_EXA', 'num_scale' =>  10, 'num_precision' => 2, },
-		{ 'id' => 18, 'name' => 'dec255' , 'base_type' => 'NUM_EXA', 'num_scale' => 255, },
+		{ 'id' => 17, 'name' => 'dec10p2', 'base_type' => 'NUM_EXA', 'num_precision' =>  10, 'num_scale' => 2, },
+		{ 'id' => 18, 'name' => 'dec255' , 'base_type' => 'NUM_EXA', 'num_precision' => 255, },
 		{ 'id' => 19, 'name' => 'boolean', 'base_type' => 'BOOLEAN', },
 		{ 'id' => 20, 'name' => 'datetime', 'base_type' => 'DATM_FULL', 'calendar' => 'ABS', },
 		{ 'id' => 21, 'name' => 'dtchines', 'base_type' => 'DATM_FULL', 'calendar' => 'CHI', },
@@ -380,18 +380,18 @@ sub expected_model_xml_output {
 				<domain id="4" schema="1" name="str10" base_type="STR_CHAR" max_chars="10" store_fixed="1" char_enc="ASCII" trim_white="1" pad_char=" " trim_pad="1" />
 				<domain id="5" schema="1" name="str30" base_type="STR_CHAR" max_chars="30" char_enc="ASCII" trim_white="1" />
 				<domain id="6" schema="1" name="str2k" base_type="STR_CHAR" max_chars="2000" char_enc="UTF8" />
-				<domain id="7" schema="1" name="byte" base_type="NUM_INT" num_scale="3" />
-				<domain id="8" schema="1" name="short" base_type="NUM_INT" num_scale="5" />
-				<domain id="9" schema="1" name="int" base_type="NUM_INT" num_scale="10" />
-				<domain id="10" schema="1" name="long" base_type="NUM_INT" num_scale="19" />
-				<domain id="11" schema="1" name="ubyte" base_type="NUM_INT" num_scale="3" num_unsigned="1" />
-				<domain id="12" schema="1" name="ushort" base_type="NUM_INT" num_scale="5" num_unsigned="1" />
-				<domain id="13" schema="1" name="uint" base_type="NUM_INT" num_scale="10" num_unsigned="1" />
-				<domain id="14" schema="1" name="ulong" base_type="NUM_INT" num_scale="19" num_unsigned="1" />
+				<domain id="7" schema="1" name="byte" base_type="NUM_INT" num_precision="3" />
+				<domain id="8" schema="1" name="short" base_type="NUM_INT" num_precision="5" />
+				<domain id="9" schema="1" name="int" base_type="NUM_INT" num_precision="10" />
+				<domain id="10" schema="1" name="long" base_type="NUM_INT" num_precision="19" />
+				<domain id="11" schema="1" name="ubyte" base_type="NUM_INT" num_precision="3" num_unsigned="1" />
+				<domain id="12" schema="1" name="ushort" base_type="NUM_INT" num_precision="5" num_unsigned="1" />
+				<domain id="13" schema="1" name="uint" base_type="NUM_INT" num_precision="10" num_unsigned="1" />
+				<domain id="14" schema="1" name="ulong" base_type="NUM_INT" num_precision="19" num_unsigned="1" />
 				<domain id="15" schema="1" name="float" base_type="NUM_APR" num_octets="4" />
 				<domain id="16" schema="1" name="double" base_type="NUM_APR" num_octets="8" />
-				<domain id="17" schema="1" name="dec10p2" base_type="NUM_EXA" num_precision="2" num_scale="10" />
-				<domain id="18" schema="1" name="dec255" base_type="NUM_EXA" num_scale="255" />
+				<domain id="17" schema="1" name="dec10p2" base_type="NUM_EXA" num_precision="10" num_scale="2" />
+				<domain id="18" schema="1" name="dec255" base_type="NUM_EXA" num_precision="255" />
 				<domain id="19" schema="1" name="boolean" base_type="BOOLEAN" />
 				<domain id="20" schema="1" name="datetime" base_type="DATM_FULL" calendar="ABS" />
 				<domain id="21" schema="1" name="dtchines" base_type="DATM_FULL" calendar="CHI" />
