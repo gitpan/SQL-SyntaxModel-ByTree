@@ -13,7 +13,13 @@ sub create_and_populate_model {
 
 	my $model = $class->new_container();
 
-	$model->create_node_trees( [ map { { 'NODE_TYPE' => 'domain', 'ATTRS' => $_ } } (
+	my $catalog = $model->create_node_tree( { 'NODE_TYPE' => 'catalog', 'ATTRS' => { 'id' => 1, }, 
+		'CHILDREN' => [ { 'NODE_TYPE' => 'owner', 'ATTRS' => { 'id' =>  1, } } ] } ); 
+
+	my $schema = $catalog->create_child_node_tree( { 'NODE_TYPE' => 'schema', 
+		'ATTRS' => { 'id' => 1, 'name' => 'gene', 'owner' => 1, } } ); 
+
+	$schema->create_child_node_trees( [ map { { 'NODE_TYPE' => 'domain', 'ATTRS' => $_ } } (
 		{ 'id' =>  1, 'name' => 'bin1k' , 'base_type' => 'STR_BIT', 'max_octets' =>  1_000, },
 		{ 'id' =>  2, 'name' => 'bin32k', 'base_type' => 'STR_BIT', 'max_octets' => 32_000, },
 		{ 'id' =>  3, 'name' => 'str4'  , 'base_type' => 'STR_CHAR', 'max_chars' =>     4, 'store_fixed' => 1, 
@@ -38,14 +44,14 @@ sub create_and_populate_model {
 		{ 'id' => 17, 'name' => 'dec10p2', 'base_type' => 'NUM_EXA', 'num_scale' =>  10, 'num_precision' => 2, },
 		{ 'id' => 18, 'name' => 'dec255' , 'base_type' => 'NUM_EXA', 'num_scale' => 255, },
 		{ 'id' => 19, 'name' => 'boolean', 'base_type' => 'BOOLEAN', },
-		{ 'id' => 20, 'name' => 'datetime', 'base_type' => 'DATETIME', 'calendar' => 'ABS', },
-		{ 'id' => 21, 'name' => 'dtchines', 'base_type' => 'DATETIME', 'calendar' => 'CHI', },
-		{ 'id' => 22, 'name' => 'sex'   , 'base_type' => 'STR_CHAR', 'max_chars' =>     1, },
-		{ 'id' => 23, 'name' => 'str20' , 'base_type' => 'STR_CHAR', 'max_chars' =>    20, },
-		{ 'id' => 24, 'name' => 'str100', 'base_type' => 'STR_CHAR', 'max_chars' =>   100, },
-		{ 'id' => 25, 'name' => 'str250', 'base_type' => 'STR_CHAR', 'max_chars' =>   250, },
-		{ 'id' => 26, 'name' => 'entitynm', 'base_type' => 'STR_CHAR', 'max_chars' =>  30, },
-		{ 'id' => 27, 'name' => 'generic' , 'base_type' => 'STR_CHAR', 'max_chars' => 250, },
+		{ 'id' => 20, 'name' => 'datetime', 'base_type' => 'DATM_FULL', 'calendar' => 'ABS', },
+		{ 'id' => 21, 'name' => 'dtchines', 'base_type' => 'DATM_FULL', 'calendar' => 'CHI', },
+		{ 'id' => 22, 'name' => 'sex'   , 'base_type' => 'STR_CHAR', 'max_chars' =>     1, 'char_enc' => 'ASCII', },
+		{ 'id' => 23, 'name' => 'str20' , 'base_type' => 'STR_CHAR', 'max_chars' =>    20, 'char_enc' => 'ASCII', },
+		{ 'id' => 24, 'name' => 'str100', 'base_type' => 'STR_CHAR', 'max_chars' =>   100, 'char_enc' => 'ASCII', },
+		{ 'id' => 25, 'name' => 'str250', 'base_type' => 'STR_CHAR', 'max_chars' =>   250, 'char_enc' => 'ASCII', },
+		{ 'id' => 26, 'name' => 'entitynm', 'base_type' => 'STR_CHAR', 'max_chars' =>  30, 'char_enc' => 'ASCII', },
+		{ 'id' => 27, 'name' => 'generic' , 'base_type' => 'STR_CHAR', 'max_chars' => 250, 'char_enc' => 'ASCII', },
 	) ] );
 
 	my $sex = $model->get_node( 'domain', '22' );
@@ -53,11 +59,6 @@ sub create_and_populate_model {
 		{ 'id' =>  1, 'value' => 'M', },
 		{ 'id' =>  2, 'value' => 'F', },
 	) ] );
-
-	my $catalog = $model->create_node_tree( { 'NODE_TYPE' => 'catalog', 'ATTRS' => { 'id' => 1, }, 
-		'CHILDREN' => [ { 'NODE_TYPE' => 'owner', 'ATTRS' => { 'id' =>  1, } } ] } ); 
-
-	my $schema = $catalog->create_child_node_tree( { 'NODE_TYPE' => 'schema', 'ATTRS' => { 'id' => 1, 'owner' => 1, } } ); 
 
 	$schema->create_child_node_tree( { 'NODE_TYPE' => 'table', 
 			'ATTRS' => { 'id' => 4, 'name' => 'person', }, 'CHILDREN' => [ 
@@ -86,8 +87,7 @@ sub create_and_populate_model {
 	] } );
 
 	$schema->create_child_node_tree( { 'NODE_TYPE' => 'view', 'ATTRS' => { 'id' => 2, 
-			'view_context' => 'SCHEMA', 'view_type' => 'MULTIPLE', 
-			'name' => 'person_with_parents', }, 'CHILDREN' => [ 
+			'view_type' => 'MULTIPLE', 'name' => 'person_with_parents', }, 'CHILDREN' => [ 
 		{ 'NODE_TYPE' => 'view_src', 'ATTRS' => { 'id' => 3, 'name' => 'self'  , 
 				'match_table' => 4, }, 'CHILDREN' => [ 
 			{ 'NODE_TYPE' => 'view_src_col', 'ATTRS' => { 'id' => 17, 'match_table_col' => 20, }, },
@@ -176,8 +176,7 @@ sub create_and_populate_model {
 	] } );
 
 	$schema->create_child_node_tree( { 'NODE_TYPE' => 'view', 'ATTRS' => { 'id' => 1, 
-			'view_context' => 'SCHEMA', 'view_type' => 'MULTIPLE', 
-			'name' => 'user', }, 'CHILDREN' => [ 
+			'view_type' => 'MULTIPLE', 'name' => 'user', }, 'CHILDREN' => [ 
 		{ 'NODE_TYPE' => 'view_src', 'ATTRS' => { 'id' => 1, 'name' => 'user_auth', 
 				'match_table' => 1, }, 'CHILDREN' => [ 
 			{ 'NODE_TYPE' => 'view_src_col', 'ATTRS' => { 'id' =>  1, 'match_table_col' =>  1, }, },
@@ -246,8 +245,7 @@ sub create_and_populate_model {
 	my $application = $model->create_node_tree( { 'NODE_TYPE' => 'application', 'ATTRS' => { 'id' => 1, }, } ); 
 
 	$application->create_child_node_tree( { 'NODE_TYPE' => 'view', 'ATTRS' => { 'id' => 3, 
-			'view_context' => 'APPLIC', 'view_type' => 'SINGLE', 
-			'name' => 'user_theme', }, 'CHILDREN' => [ 
+			'view_type' => 'SINGLE', 'name' => 'user_theme', }, 'CHILDREN' => [ 
 		{ 'NODE_TYPE' => 'view_src', 'ATTRS' => { 'id' => 6, 'name' => 'user_pref', 
 			'match_table' => 3, }, 'CHILDREN' => [ 
 			{ 'NODE_TYPE' => 'view_src_col', 'ATTRS' => { 'id' => 23, 'match_table_col' => 18, }, },
@@ -260,25 +258,25 @@ sub create_and_populate_model {
 		{ 'NODE_TYPE' => 'view_expr', 'ATTRS' => { 'view_part' => 'RESULT', 
 			'id' => 42, 'view_col' => 22, 'expr_type' => 'COL', 'src_col' => 24, }, },
 		{ 'NODE_TYPE' => 'view_expr', 'ATTRS' => { 'view_part' => 'RESULT', 
-			'id' => 43, 'view_col' => 23, 'expr_type' => 'SFUNC', 'sfunc' => 'GCOUNT', }, 'CHILDREN' => [ 
+			'id' => 43, 'view_col' => 23, 'expr_type' => 'SFUNC', 'call_sfunc' => 'COUNT', }, 'CHILDREN' => [ 
 			{ 'NODE_TYPE' => 'view_expr', 'ATTRS' => { 
 				'id' => 44, 'expr_type' => 'COL', 'src_col' => 24, }, },
 		] },
 		{ 'NODE_TYPE' => 'view_expr', 'ATTRS' => { 'view_part' => 'WHERE', 
-				'id' => 11, 'expr_type' => 'SFUNC', 'sfunc' => 'EQ', }, 'CHILDREN' => [ 
+				'id' => 11, 'expr_type' => 'SFUNC', 'call_sfunc' => 'EQ', }, 'CHILDREN' => [ 
 			{ 'NODE_TYPE' => 'view_expr', 'ATTRS' => { 
 				'id' => 12, 'expr_type' => 'COL', 'src_col' => 23, }, },
 			{ 'NODE_TYPE' => 'view_expr', 'ATTRS' => { 
-				'id' => 13, 'expr_type' => 'LIT', 'lit_val' => 'theme', }, },
+				'id' => 13, 'expr_type' => 'LIT', 'domain' => 5, 'lit_val' => 'theme', }, },
 		] },
 		{ 'NODE_TYPE' => 'view_expr', 'ATTRS' => { 'view_part' => 'GROUP', 
 			'id' => 14, 'expr_type' => 'COL', 'src_col' => 24, }, },
 		{ 'NODE_TYPE' => 'view_expr', 'ATTRS' => { 'view_part' => 'HAVING', 
-				'id' => 15, 'expr_type' => 'SFUNC', 'sfunc' => 'GT', }, 'CHILDREN' => [ 
+				'id' => 15, 'expr_type' => 'SFUNC', 'call_sfunc' => 'GT', }, 'CHILDREN' => [ 
 			{ 'NODE_TYPE' => 'view_expr', 'ATTRS' => { 
-				'id' => 16, 'expr_type' => 'SFUNC', 'sfunc' => 'GCOUNT', }, },
+				'id' => 16, 'expr_type' => 'SFUNC', 'call_sfunc' => 'COUNT', }, },
 			{ 'NODE_TYPE' => 'view_expr', 'ATTRS' => { 
-				'id' => 17, 'expr_type' => 'LIT', 'lit_val' => '1', }, },
+				'id' => 17, 'expr_type' => 'LIT', 'domain' => 9, 'lit_val' => '1', }, },
 		] },
 		{ 'NODE_TYPE' => 'view_expr', 'ATTRS' => { 'view_part' => 'ORDER', 
 			'id' => 55, 'expr_type' => 'MCOL', 'match_col' => 23, }, },
@@ -288,8 +286,9 @@ sub create_and_populate_model {
 
 	$application->create_child_node_tree( { 'NODE_TYPE' => 'routine', 
 			'ATTRS' => { 'id' => 1, 'routine_type' => 'ANONYMOUS', 'name' => 'get_user', }, 'CHILDREN' => [ 
-		{ 'NODE_TYPE' => 'routine_arg', 'ATTRS' => { 'id' => 1, 'name' => 'curr_uid', }, },
-		{ 'NODE_TYPE' => 'view', 'ATTRS' => { 'id' => 5, 'view_context' => 'ROUTINE', 
+		{ 'NODE_TYPE' => 'routine_arg', 'ATTRS' => { 'id' => 1, 'name' => 'curr_uid', 
+			'var_type' => 'SCALAR', 'domain' => 9, }, },
+		{ 'NODE_TYPE' => 'view', 'ATTRS' => { 'id' => 5, 'name' => 'get_user', 
 				'view_type' => 'MATCH', 'match_all_cols' => 1, }, 'CHILDREN' => [ 
 			{ 'NODE_TYPE' => 'view_src', 'ATTRS' => { 'id' => 8, 'name' => 'm', 'match_view' => 1, }, 
 					'CHILDREN' => [ 
@@ -297,7 +296,7 @@ sub create_and_populate_model {
 				{ 'NODE_TYPE' => 'view_src_col', 'ATTRS' => { 'id' => 31, 'match_view_col' => 2, }, },
 			] },
 			{ 'NODE_TYPE' => 'view_expr', 'ATTRS' => { 'view_part' => 'WHERE', 
-					'id' => 1, 'expr_type' => 'SFUNC', 'sfunc' => 'EQ', }, 'CHILDREN' => [ 
+					'id' => 1, 'expr_type' => 'SFUNC', 'call_sfunc' => 'EQ', }, 'CHILDREN' => [ 
 				{ 'NODE_TYPE' => 'view_expr', 'ATTRS' => { 
 					'id' => 2, 'expr_type' => 'COL', 'src_col' => 30, }, },
 				{ 'NODE_TYPE' => 'view_expr', 'ATTRS' => { 
@@ -310,9 +309,9 @@ sub create_and_populate_model {
 
 	$application->create_child_node_tree( { 'NODE_TYPE' => 'routine', 
 			'ATTRS' => { 'id' => 2, 'routine_type' => 'ANONYMOUS', 'name' => 'get_pwp', }, 'CHILDREN' => [ 
-		{ 'NODE_TYPE' => 'routine_arg', 'ATTRS' => { 'id' => 2, 'name' => 'srchw_fa', }, },
-		{ 'NODE_TYPE' => 'routine_arg', 'ATTRS' => { 'id' => 3, 'name' => 'srchw_mo', }, },
-		{ 'NODE_TYPE' => 'view', 'ATTRS' => { 'id' => 6, 'view_context' => 'ROUTINE', 
+		{ 'NODE_TYPE' => 'routine_arg', 'ATTRS' => { 'id' => 2, 'name' => 'srchw_fa', 'var_type' => 'SCALAR', 'domain' => 5, }, },
+		{ 'NODE_TYPE' => 'routine_arg', 'ATTRS' => { 'id' => 3, 'name' => 'srchw_mo', 'var_type' => 'SCALAR', 'domain' => 5, }, },
+		{ 'NODE_TYPE' => 'view', 'ATTRS' => { 'id' => 6, 'name' => 'get_pwp', 
 				'view_type' => 'MATCH', 'match_all_cols' => 1, }, 'CHILDREN' => [ 
 			{ 'NODE_TYPE' => 'view_src', 'ATTRS' => { 'id' => 9, 'name' => 'm', 'match_view' => 2, }, 
 					'CHILDREN' => [ 
@@ -321,16 +320,16 @@ sub create_and_populate_model {
 				{ 'NODE_TYPE' => 'view_src_col', 'ATTRS' => { 'id' => 29, 'match_view_col' => 21, }, },
 			] },
 			{ 'NODE_TYPE' => 'view_expr', 'ATTRS' => { 'view_part' => 'WHERE', 
-					'id' => 4, 'expr_type' => 'SFUNC', 'sfunc' => 'AND', }, 'CHILDREN' => [ 
+					'id' => 4, 'expr_type' => 'SFUNC', 'call_sfunc' => 'AND', }, 'CHILDREN' => [ 
 				{ 'NODE_TYPE' => 'view_expr', 'ATTRS' => { 
-						'id' => 5, 'expr_type' => 'SFUNC', 'sfunc' => 'LIKE', }, 'CHILDREN' => [ 
+						'id' => 5, 'expr_type' => 'SFUNC', 'call_sfunc' => 'LIKE', }, 'CHILDREN' => [ 
 					{ 'NODE_TYPE' => 'view_expr', 'ATTRS' => { 
 						'id' => 6, 'expr_type' => 'COL', 'src_col' => 28, }, },
 					{ 'NODE_TYPE' => 'view_expr', 'ATTRS' => { 
 						'id' => 7, 'expr_type' => 'ARG', 'routine_arg' => 2, }, },
 				] },
 				{ 'NODE_TYPE' => 'view_expr', 'ATTRS' => { 
-						'id' => 8, 'expr_type' => 'SFUNC', 'sfunc' => 'LIKE', }, 'CHILDREN' => [ 
+						'id' => 8, 'expr_type' => 'SFUNC', 'call_sfunc' => 'LIKE', }, 'CHILDREN' => [ 
 					{ 'NODE_TYPE' => 'view_expr', 'ATTRS' => { 
 						'id' => 9, 'expr_type' => 'COL', 'src_col' => 29, }, },
 					{ 'NODE_TYPE' => 'view_expr', 'ATTRS' => { 
@@ -348,7 +347,7 @@ sub create_and_populate_model {
 
 	$application->create_child_node_tree( { 'NODE_TYPE' => 'routine', 
 			'ATTRS' => { 'id' => 3, 'routine_type' => 'ANONYMOUS', 'name' => 'get_theme', }, 'CHILDREN' => [ 
-		{ 'NODE_TYPE' => 'view', 'ATTRS' => { 'id' => 7, 'view_context' => 'ROUTINE', 
+		{ 'NODE_TYPE' => 'view', 'ATTRS' => { 'id' => 7, 'name' => 'get_theme', 
 				'view_type' => 'MATCH', 'match_all_cols' => 1, }, 'CHILDREN' => [ 
 			{ 'NODE_TYPE' => 'view_src', 'ATTRS' => { 'id' => 10, 'name' => 'm', 'match_view' => 3, }, },
 		] },
@@ -356,7 +355,7 @@ sub create_and_populate_model {
 
 	$application->create_child_node_tree( { 'NODE_TYPE' => 'routine', 
 			'ATTRS' => { 'id' => 4, 'routine_type' => 'ANONYMOUS', 'name' => 'get_person', }, 'CHILDREN' => [ 
-		{ 'NODE_TYPE' => 'view', 'ATTRS' => { 'id' => 4, 'view_context' => 'ROUTINE', 'view_type' => 'MATCH', 
+		{ 'NODE_TYPE' => 'view', 'ATTRS' => { 'id' => 4, 'name' => 'get_person', 'view_type' => 'MATCH', 
 				'match_all_cols' => 1, }, 'CHILDREN' => [ 
 			{ 'NODE_TYPE' => 'view_src', 'ATTRS' => { 'id' => 7, 'name' => 'person', 'match_table' => 4, }, },
 		] }
@@ -370,42 +369,41 @@ sub create_and_populate_model {
 sub expected_model_xml_output {
 	return(
 '<root>
-	<elements>
-		<domain id="1" name="bin1k" base_type="STR_BIT" max_octets="1000" />
-		<domain id="2" name="bin32k" base_type="STR_BIT" max_octets="32000" />
-		<domain id="3" name="str4" base_type="STR_CHAR" max_chars="4" store_fixed="1" char_enc="ASCII" trim_white="1" uc_latin="1" pad_char=" " trim_pad="1" />
-		<domain id="4" name="str10" base_type="STR_CHAR" max_chars="10" store_fixed="1" char_enc="ASCII" trim_white="1" pad_char=" " trim_pad="1" />
-		<domain id="5" name="str30" base_type="STR_CHAR" max_chars="30" char_enc="ASCII" trim_white="1" />
-		<domain id="6" name="str2k" base_type="STR_CHAR" max_chars="2000" char_enc="UTF8" />
-		<domain id="7" name="byte" base_type="NUM_INT" num_scale="3" />
-		<domain id="8" name="short" base_type="NUM_INT" num_scale="5" />
-		<domain id="9" name="int" base_type="NUM_INT" num_scale="10" />
-		<domain id="10" name="long" base_type="NUM_INT" num_scale="19" />
-		<domain id="11" name="ubyte" base_type="NUM_INT" num_scale="3" num_unsigned="1" />
-		<domain id="12" name="ushort" base_type="NUM_INT" num_scale="5" num_unsigned="1" />
-		<domain id="13" name="uint" base_type="NUM_INT" num_scale="10" num_unsigned="1" />
-		<domain id="14" name="ulong" base_type="NUM_INT" num_scale="19" num_unsigned="1" />
-		<domain id="15" name="float" base_type="NUM_APR" num_octets="4" />
-		<domain id="16" name="double" base_type="NUM_APR" num_octets="8" />
-		<domain id="17" name="dec10p2" base_type="NUM_EXA" num_scale="10" num_precision="2" />
-		<domain id="18" name="dec255" base_type="NUM_EXA" num_scale="255" />
-		<domain id="19" name="boolean" base_type="BOOLEAN" />
-		<domain id="20" name="datetime" base_type="DATETIME" calendar="ABS" />
-		<domain id="21" name="dtchines" base_type="DATETIME" calendar="CHI" />
-		<domain id="22" name="sex" base_type="STR_CHAR" max_chars="1">
-			<domain_opt id="1" domain="22" value="M" />
-			<domain_opt id="2" domain="22" value="F" />
-		</domain>
-		<domain id="23" name="str20" base_type="STR_CHAR" max_chars="20" />
-		<domain id="24" name="str100" base_type="STR_CHAR" max_chars="100" />
-		<domain id="25" name="str250" base_type="STR_CHAR" max_chars="250" />
-		<domain id="26" name="entitynm" base_type="STR_CHAR" max_chars="30" />
-		<domain id="27" name="generic" base_type="STR_CHAR" max_chars="250" />
-	</elements>
+	<elements />
 	<blueprints>
 		<catalog id="1">
 			<owner id="1" catalog="1" />
-			<schema id="1" catalog="1" owner="1">
+			<schema id="1" catalog="1" name="gene" owner="1">
+				<domain id="1" schema="1" name="bin1k" base_type="STR_BIT" max_octets="1000" />
+				<domain id="2" schema="1" name="bin32k" base_type="STR_BIT" max_octets="32000" />
+				<domain id="3" schema="1" name="str4" base_type="STR_CHAR" max_chars="4" store_fixed="1" char_enc="ASCII" trim_white="1" uc_latin="1" pad_char=" " trim_pad="1" />
+				<domain id="4" schema="1" name="str10" base_type="STR_CHAR" max_chars="10" store_fixed="1" char_enc="ASCII" trim_white="1" pad_char=" " trim_pad="1" />
+				<domain id="5" schema="1" name="str30" base_type="STR_CHAR" max_chars="30" char_enc="ASCII" trim_white="1" />
+				<domain id="6" schema="1" name="str2k" base_type="STR_CHAR" max_chars="2000" char_enc="UTF8" />
+				<domain id="7" schema="1" name="byte" base_type="NUM_INT" num_scale="3" />
+				<domain id="8" schema="1" name="short" base_type="NUM_INT" num_scale="5" />
+				<domain id="9" schema="1" name="int" base_type="NUM_INT" num_scale="10" />
+				<domain id="10" schema="1" name="long" base_type="NUM_INT" num_scale="19" />
+				<domain id="11" schema="1" name="ubyte" base_type="NUM_INT" num_scale="3" num_unsigned="1" />
+				<domain id="12" schema="1" name="ushort" base_type="NUM_INT" num_scale="5" num_unsigned="1" />
+				<domain id="13" schema="1" name="uint" base_type="NUM_INT" num_scale="10" num_unsigned="1" />
+				<domain id="14" schema="1" name="ulong" base_type="NUM_INT" num_scale="19" num_unsigned="1" />
+				<domain id="15" schema="1" name="float" base_type="NUM_APR" num_octets="4" />
+				<domain id="16" schema="1" name="double" base_type="NUM_APR" num_octets="8" />
+				<domain id="17" schema="1" name="dec10p2" base_type="NUM_EXA" num_precision="2" num_scale="10" />
+				<domain id="18" schema="1" name="dec255" base_type="NUM_EXA" num_scale="255" />
+				<domain id="19" schema="1" name="boolean" base_type="BOOLEAN" />
+				<domain id="20" schema="1" name="datetime" base_type="DATM_FULL" calendar="ABS" />
+				<domain id="21" schema="1" name="dtchines" base_type="DATM_FULL" calendar="CHI" />
+				<domain id="22" schema="1" name="sex" base_type="STR_CHAR" max_chars="1" char_enc="ASCII">
+					<domain_opt id="1" domain="22" value="M" />
+					<domain_opt id="2" domain="22" value="F" />
+				</domain>
+				<domain id="23" schema="1" name="str20" base_type="STR_CHAR" max_chars="20" char_enc="ASCII" />
+				<domain id="24" schema="1" name="str100" base_type="STR_CHAR" max_chars="100" char_enc="ASCII" />
+				<domain id="25" schema="1" name="str250" base_type="STR_CHAR" max_chars="250" char_enc="ASCII" />
+				<domain id="26" schema="1" name="entitynm" base_type="STR_CHAR" max_chars="30" char_enc="ASCII" />
+				<domain id="27" schema="1" name="generic" base_type="STR_CHAR" max_chars="250" char_enc="ASCII" />
 				<table id="4" schema="1" name="person">
 					<table_col id="20" table="4" name="person_id" domain="9" mandatory="1" default_val="1" auto_inc="1" />
 					<table_col id="21" table="4" name="alternate_id" domain="23" mandatory="0" />
@@ -426,7 +424,7 @@ sub expected_model_xml_output {
 						<table_ind_col id="13" table_ind="12" table_col="25" f_table_col="20" />
 					</table_ind>
 				</table>
-				<view id="2" view_context="SCHEMA" view_type="MULTIPLE" schema="1" name="person_with_parents">
+				<view id="2" view_type="MULTIPLE" schema="1" name="person_with_parents">
 					<view_src id="3" view="2" name="self" match_table="4">
 						<view_src_col id="17" src="3" match_table_col="20" />
 						<view_src_col id="18" src="3" match_table_col="22" />
@@ -492,7 +490,7 @@ sub expected_model_xml_output {
 						<table_ind_col id="6" table_ind="6" table_col="8" f_table_col="1" />
 					</table_ind>
 				</table>
-				<view id="1" view_context="SCHEMA" view_type="MULTIPLE" schema="1" name="user">
+				<view id="1" view_type="MULTIPLE" schema="1" name="user">
 					<view_src id="1" view="1" name="user_auth" match_table="1">
 						<view_src_col id="1" src="1" match_table_col="1" />
 						<view_src_col id="2" src="1" match_table_col="2" />
@@ -547,7 +545,7 @@ sub expected_model_xml_output {
 			</schema>
 		</catalog>
 		<application id="1">
-			<view id="3" view_context="APPLIC" view_type="SINGLE" name="user_theme" application="1">
+			<view id="3" view_type="SINGLE" name="user_theme" application="1">
 				<view_src id="6" view="3" name="user_pref" match_table="3">
 					<view_src_col id="23" src="6" match_table_col="18" />
 					<view_src_col id="24" src="6" match_table_col="19" />
@@ -555,29 +553,29 @@ sub expected_model_xml_output {
 				<view_col id="22" view="3" name="theme_name" domain="27" />
 				<view_col id="23" view="3" name="theme_count" domain="9" />
 				<view_expr id="42" expr_type="COL" view="3" view_part="RESULT" view_col="22" src_col="24" />
-				<view_expr id="43" expr_type="SFUNC" view="3" view_part="RESULT" view_col="23">
+				<view_expr id="43" expr_type="SFUNC" view="3" view_part="RESULT" view_col="23" call_sfunc="COUNT">
 					<view_expr id="44" expr_type="COL" p_expr="43" src_col="24" />
 				</view_expr>
-				<view_expr id="11" expr_type="SFUNC" view="3" view_part="WHERE">
+				<view_expr id="11" expr_type="SFUNC" view="3" view_part="WHERE" call_sfunc="EQ">
 					<view_expr id="12" expr_type="COL" p_expr="11" src_col="23" />
-					<view_expr id="13" expr_type="LIT" p_expr="11" lit_val="theme" />
+					<view_expr id="13" expr_type="LIT" p_expr="11" domain="5" lit_val="theme" />
 				</view_expr>
 				<view_expr id="14" expr_type="COL" view="3" view_part="GROUP" src_col="24" />
-				<view_expr id="15" expr_type="SFUNC" view="3" view_part="HAVING">
-					<view_expr id="16" expr_type="SFUNC" p_expr="15" />
-					<view_expr id="17" expr_type="LIT" p_expr="15" lit_val="1" />
+				<view_expr id="15" expr_type="SFUNC" view="3" view_part="HAVING" call_sfunc="GT">
+					<view_expr id="16" expr_type="SFUNC" p_expr="15" call_sfunc="COUNT" />
+					<view_expr id="17" expr_type="LIT" p_expr="15" domain="9" lit_val="1" />
 				</view_expr>
 				<view_expr id="55" expr_type="MCOL" view="3" view_part="ORDER" match_col="23" />
 				<view_expr id="56" expr_type="MCOL" view="3" view_part="ORDER" match_col="22" />
 			</view>
 			<routine id="1" routine_type="ANONYMOUS" application="1" name="get_user">
-				<routine_arg id="1" routine="1" name="curr_uid" />
-				<view id="5" view_context="ROUTINE" view_type="MATCH" routine="1" match_all_cols="1">
+				<routine_arg id="1" routine="1" name="curr_uid" var_type="SCALAR" domain="9" />
+				<view id="5" view_type="MATCH" name="get_user" routine="1" match_all_cols="1">
 					<view_src id="8" view="5" name="m" match_view="1">
 						<view_src_col id="30" src="8" match_view_col="1" />
 						<view_src_col id="31" src="8" match_view_col="2" />
 					</view_src>
-					<view_expr id="1" expr_type="SFUNC" view="5" view_part="WHERE">
+					<view_expr id="1" expr_type="SFUNC" view="5" view_part="WHERE" call_sfunc="EQ">
 						<view_expr id="2" expr_type="COL" p_expr="1" src_col="30" />
 						<view_expr id="3" expr_type="ARG" p_expr="1" routine_arg="1" />
 					</view_expr>
@@ -585,20 +583,20 @@ sub expected_model_xml_output {
 				</view>
 			</routine>
 			<routine id="2" routine_type="ANONYMOUS" application="1" name="get_pwp">
-				<routine_arg id="2" routine="2" name="srchw_fa" />
-				<routine_arg id="3" routine="2" name="srchw_mo" />
-				<view id="6" view_context="ROUTINE" view_type="MATCH" routine="2" match_all_cols="1">
+				<routine_arg id="2" routine="2" name="srchw_fa" var_type="SCALAR" domain="5" />
+				<routine_arg id="3" routine="2" name="srchw_mo" var_type="SCALAR" domain="5" />
+				<view id="6" view_type="MATCH" name="get_pwp" routine="2" match_all_cols="1">
 					<view_src id="9" view="6" name="m" match_view="2">
 						<view_src_col id="27" src="9" match_view_col="17" />
 						<view_src_col id="28" src="9" match_view_col="19" />
 						<view_src_col id="29" src="9" match_view_col="21" />
 					</view_src>
-					<view_expr id="4" expr_type="SFUNC" view="6" view_part="WHERE">
-						<view_expr id="5" expr_type="SFUNC" p_expr="4">
+					<view_expr id="4" expr_type="SFUNC" view="6" view_part="WHERE" call_sfunc="AND">
+						<view_expr id="5" expr_type="SFUNC" p_expr="4" call_sfunc="LIKE">
 							<view_expr id="6" expr_type="COL" p_expr="5" src_col="28" />
 							<view_expr id="7" expr_type="ARG" p_expr="5" routine_arg="2" />
 						</view_expr>
-						<view_expr id="8" expr_type="SFUNC" p_expr="4">
+						<view_expr id="8" expr_type="SFUNC" p_expr="4" call_sfunc="LIKE">
 							<view_expr id="9" expr_type="COL" p_expr="8" src_col="29" />
 							<view_expr id="10" expr_type="ARG" p_expr="8" routine_arg="3" />
 						</view_expr>
@@ -609,12 +607,12 @@ sub expected_model_xml_output {
 				</view>
 			</routine>
 			<routine id="3" routine_type="ANONYMOUS" application="1" name="get_theme">
-				<view id="7" view_context="ROUTINE" view_type="MATCH" routine="3" match_all_cols="1">
+				<view id="7" view_type="MATCH" name="get_theme" routine="3" match_all_cols="1">
 					<view_src id="10" view="7" name="m" match_view="3" />
 				</view>
 			</routine>
 			<routine id="4" routine_type="ANONYMOUS" application="1" name="get_person">
-				<view id="4" view_context="ROUTINE" view_type="MATCH" routine="4" match_all_cols="1">
+				<view id="4" view_type="MATCH" name="get_person" routine="4" match_all_cols="1">
 					<view_src id="7" view="4" name="person" match_table="4" />
 				</view>
 			</routine>
